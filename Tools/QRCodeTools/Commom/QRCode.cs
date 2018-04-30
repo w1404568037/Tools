@@ -157,6 +157,7 @@ namespace Tools.QRCodeTools.Commom
 				using (Stream stream = File.Create(path))
 				{
 					Image image = QRCode.TextToBitmap(content,size, barcodeFormat,margin,encoding,errorCorrectionLevel );
+					//保存不了Ico文件。。。不知道为什么
 					image.Save(stream, imageFormat?? ImageFormat.Png);
 					
 				}

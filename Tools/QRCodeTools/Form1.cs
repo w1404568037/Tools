@@ -16,6 +16,7 @@ namespace Tools.QRCodeTools
 {
 	public partial class Form1 : Form
 	{
+		ScreenForm screenForm = null;
 		public Form1()
 		{
 			InitializeComponent();
@@ -125,7 +126,8 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 					if (this.cheEditFile.Checked == true)
 					{
 						ImageFormat imageFormat = QRCode.GetImageFormat(path);
-						QRCode.SavePicture(path, content, size, ZXing.BarcodeFormat.QR_CODE, 0, "UTF-8", ZXing.QrCode.Internal.ErrorCorrectionLevel.H, imageFormat);
+						//QRCode.SavePicture(path,image, imageFormat);
+						QRCode.SavePicture(path, content, size, ZXing.BarcodeFormat.QR_CODE, 0, "UTF=8",ZXing.QrCode.Internal.ErrorCorrectionLevel.H,imageFormat);
 					}
 					this.picboxQRCodePicture.Image=image;
 					this.labWidth.Text = "宽:" + image.Size.Width.ToString();
@@ -200,5 +202,163 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 				MessageBox.Show(ee.Message, "错误");
 			}
 		}
+
+		private void btnScreen_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				Rectangle rectangle = Screen.PrimaryScreen.Bounds;
+				rectangle.Width = 1920;
+				rectangle.Height = 1080;
+				Image image = new Bitmap(rectangle.Width,rectangle.Height);
+				using (Graphics graphics=Graphics.FromImage(image))
+				{
+					graphics.CopyFromScreen(0, 0, 0, 0, rectangle.Size);
+				}
+				if (this.screenForm == null)
+				{
+					this.screenForm = new ScreenForm(image);
+				}
+				else
+				{
+					this.screenForm.BackgroundImage = image;
+				}
+				this.screenForm.ShowDialog();
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+		}
+		private class ScreenForm: Form
+		{
+			/// <summary>
+			/// Required designer variable.
+			/// </summary>
+			private System.ComponentModel.IContainer components = null;
+
+			public Rectangle rectangle;
+
+			Point startPoint;
+			Point endPoint;
+
+			public ScreenForm(Image image)
+			{
+				try
+				{
+					InitializeComponent();
+					this.FormBorderStyle = FormBorderStyle.None;
+					this.BackgroundImage = image;
+				}
+				catch (Exception ee)
+				{
+					MessageBox.Show(ee.Message,"错误");
+				}
+			}
+
+			/// <summary>
+			/// Clean up any resources being used.
+			/// </summary>
+			/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+			protected override void Dispose(bool disposing)
+			{
+				if (disposing && (components != null))
+				{
+					components.Dispose();
+				}
+				base.Dispose(disposing);
+			}
+			private void InitializeComponent()
+			{
+				try
+				{
+					this.components = new System.ComponentModel.Container();
+					this.Size = Screen.PrimaryScreen.Bounds.Size;
+					this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
+					this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+					this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
+					this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseLeave);
+				}
+				catch (Exception)
+				{
+					throw;
+				}
+			}
+			private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+			{
+				try
+				{
+					if (e.KeyChar == (char)Keys.Escape)
+					{
+						this.Close();
+					}
+				}
+				catch (Exception ee)
+				{
+					MessageBox.Show(ee.Message, "错误");
+				}
+			}
+			private void Form1_MouseDown(object sender, MouseEventArgs e)
+			{
+				if (e.Button == MouseButtons.Left)
+				{
+					this.startPoint =e.Location;
+				}
+			}
+
+			private void Form1_MouseUp(object sender, MouseEventArgs e)
+			{
+				if (e.Button == MouseButtons.Left)
+				{
+					//this.endPoint= e.Location;
+					//if (startPoint.Equals(endPoint))
+					//{
+					//	return;
+					//}
+					//Size size = new Size()
+					//{
+					//	Width = Math.Abs(endPoint.X - startPoint.X),
+					//	Height = Math.Abs(endPoint.Y - startPoint.Y),
+					//};
+					//this.rectangle = new Rectangle()
+					//{
+					//	Size=size,
+					//	Location=this.startPoint,
+					//};
+					Graphics graphics = Graphics.FromImage(this.BackgroundImage);
+					Image image = (Image)this.BackgroundImage.Clone();
+					graphics.DrawImage(image,this.rectangle);
+					Clipboard.SetImage(image);
+					this.Close();
+				}
+			}
+			private void Form1_MouseLeave(object sender, MouseEventArgs e)
+			{
+				if (e.Button != MouseButtons.Left)
+				{
+					return;
+				}
+				else
+				{
+					this.endPoint = e.Location;
+					Size size = new Size()
+					{
+						Width = Math.Abs(endPoint.X - startPoint.X),
+						Height = Math.Abs(endPoint.Y - startPoint.Y),
+					};
+					this.rectangle = new Rectangle()
+					{
+						Size = size,
+						Location = this.startPoint,
+					};
+					Graphics graphics = this.CreateGraphics();
+					Color color = Color.Black;
+					Pen pen = new Pen(color, 0.2f);
+					graphics.DrawRectangle(pen,this.rectangle);
+				}
+			}
+		}
+
 	}
 }

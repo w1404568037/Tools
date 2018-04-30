@@ -203,6 +203,7 @@
 			this.btnScreen.TabIndex = 10;
 			this.btnScreen.Text = "截屏";
 			this.btnScreen.UseVisualStyleBackColor = true;
+			this.btnScreen.Click += new System.EventHandler(this.btnScreen_Click);
 			// 
 			// btnScanQRCode
 			// 

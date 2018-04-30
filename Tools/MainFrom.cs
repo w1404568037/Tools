@@ -17,11 +17,20 @@ namespace Tools
 		
 		public MainFrom()
 		{
-			InitializeComponent();
-			IEnumerable<TreeNode> treeNodes = this.InitTreeNodes();
-			foreach (TreeNode item in treeNodes)
+			try
 			{
-				this.treeMain.Nodes.Add(item);
+
+				InitializeComponent();
+				IEnumerable<TreeNode> treeNodes = this.InitTreeNodes();
+				foreach (TreeNode item in treeNodes)
+				{
+					this.treeMain.Nodes.Add(item);
+				}
+			}
+			catch (Exception ee)
+			{
+				MessageBox.Show(ee.Message,"错误");
+				Application.Exit();
 			}
 		}
 		/// <summary>
@@ -68,7 +77,6 @@ namespace Tools
 			}
 			catch (Exception)
 			{
-
 				throw;
 			}
 		}
