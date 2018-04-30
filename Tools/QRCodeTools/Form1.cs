@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Tools.QRCodeTools.Commom;
@@ -17,6 +19,18 @@ namespace Tools.QRCodeTools
 		public Form1()
 		{
 			InitializeComponent();
+
+			this.InitControl();
+		}
+		private void InitControl()
+		{
+			try
+			{
+			}
+			catch (Exception ee)
+			{
+				MessageBox.Show(ee.Message,"错误");
+			}
 		}
 
 		/// <summary>
@@ -39,12 +53,10 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 				DialogResult result=this.openFileDialog1.ShowDialog();
 				if (result== DialogResult.OK)
 				{
+					this.picboxQRCodePicture.Image = this.picboxQRCodePicture.ErrorImage;
+					this.txtQRCodeText.Text = "";
 					string path = openFileDialog1.FileName;
 					this.txtPicturePath.Text = path;
-					Bitmap bitmap = new Bitmap(File.Open(path, FileMode.Open));
-
-					this.txtQRCodeText.Text = QRCode.BitmapToText(new Bitmap((Image)bitmap.Clone()));
-					bitmap.Dispose();
 				}
 			}
 			catch (Exception ee)
@@ -74,8 +86,13 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 				if (result == DialogResult.OK)
 				{
 					string path = this.saveFileDialog1.FileName;
+					string content = this.txtQRCodeText.Text;
+					if (content!="")
+					{
+						Size size = this.picboxQRCodePicture.Image.Size;
+						QRCode.SavePicture(path, content, size, ZXing.BarcodeFormat.QR_CODE, 0, "UTF-8", ZXing.QrCode.Internal.ErrorCorrectionLevel.H, QRCode.GetImageFormat(path));
+					}
 					this.txtPicturePath.Text = path;
-					File.Create(path);
 				}
 			}
 			catch (Exception ee)
@@ -87,17 +104,35 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 		{
 			try
 			{
+
+				//ThreadStart threadStart = new ThreadStart(()=> this.picboxQRCodePicture.Image = global::Tools.Properties.Resources.await);
+				//new Thread(threadStart).Start() ;
 				string path = this.txtPicturePath.Text.Trim() ;
 				string content = this.txtQRCodeText.Text;
-				//QRCode.SavePicture(path, content, new Size(400, 400), ZXing.BarcodeFormat.QR_CODE);
-				Image image = QRCode.TextToBitmap(content,new Size(400,400),ZXing.BarcodeFormat.QR_CODE);
-				image.Save(path);
-				this.labWidth.Text = "宽:"+image.Size.Width.ToString();
-				this.labHeight.Text = "高:"+image.Size.Height.ToString();
-				this.labPictureSIze.Text = "文件大小:"+(new FileInfo(path).Length / 1024 + "K");
-				this.labTextLength.Text ="内容长度:"+ content.Length.ToString();
-				this.picboxQRCodePicture.Image = image;
-				image.Dispose();
+				this.labWidth.Text = "宽:" ;
+				this.labHeight.Text = "高:" ;
+				this.labPictureSIze.Text = "文件大小:K";
+				this.labTextLength.Text = "内容长度:"+ content.Length;
+				if (content == "")
+				{
+					this.picboxQRCodePicture.Image = this.picboxQRCodePicture.ErrorImage;
+					return;
+				}
+				Size size = this.picboxQRCodePicture.Size;
+				Image image = QRCode.TextToBitmap(content, size, ZXing.BarcodeFormat.QR_CODE);
+				if (File.Exists(path)==true)
+				{
+					if (this.cheEditFile.Checked == true)
+					{
+						ImageFormat imageFormat = QRCode.GetImageFormat(path);
+						QRCode.SavePicture(path, content, size, ZXing.BarcodeFormat.QR_CODE, 0, "UTF-8", ZXing.QrCode.Internal.ErrorCorrectionLevel.H, imageFormat);
+					}
+					this.picboxQRCodePicture.Image=image;
+					this.labWidth.Text = "宽:" + image.Size.Width.ToString();
+					this.labHeight.Text = "高:" + image.Size.Height.ToString();
+					this.labPictureSIze.Text = "文件大小:" + (new FileInfo(path).Length / 1024 + "K");
+					this.labTextLength.Text = "内容长度:" + content.Length.ToString();
+				}
 			}
 			catch (Exception ee)
 			{
@@ -112,19 +147,20 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 				string path = this.txtPicturePath.Text.Trim();
 				if (File.Exists(path))
 				{
-					this.txtQRCodeText.ReadOnly = false;
-					if (this.txtQRCodeText.Text.Trim() == "")
+					using (Stream stream=File.Open(path,FileMode.Open))
 					{
-						return;
+						if (stream.Length==0)
+						{
+							return;
+						}
+						this.picboxQRCodePicture.Image = Image.FromStream(stream);
 					}
-					string content = this.txtQRCodeText.Text;
-					QRCode.SavePicture(path, content, new Size(400, 400), ZXing.BarcodeFormat.QR_CODE);
-					this.picboxQRCodePicture.Image = Image.FromFile(path);
+					this.txtQRCodeText.Text = QRCode.BitmapToText((Bitmap)this.picboxQRCodePicture.Image);
 				}
 				else
 				{
+					this.picboxQRCodePicture.Image = this.picboxQRCodePicture.ErrorImage;
 					this.txtQRCodeText.Text = "";
-					this.txtQRCodeText.ReadOnly = true;
 				}
 			}
 			catch (Exception ee)
@@ -137,9 +173,10 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 		{
 			try
 			{
-				if (this.txtQRCodeText.Text!=null&&this.txtQRCodeText.Text!="")
+				string content = this.txtQRCodeText.Text;
+				if (content != null&& content != "")
 				{
-					Clipboard.SetText(this.txtQRCodeText.Text);
+					Clipboard.SetText(content);
 				}
 			}
 			catch (Exception ee)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -149,14 +150,15 @@ namespace Tools.QRCodeTools.Commom
 		/// <param name="imageFormat">图片类型</param>
 		public static void SavePicture(
 			string path, string content,Size size, BarcodeFormat barcodeFormat,int margin=0,string encoding = "UTF-8", 
-			ErrorCorrectionLevel errorCorrectionLevel = null, System.Drawing.Imaging.ImageFormat imageFormat = null)
+			ErrorCorrectionLevel errorCorrectionLevel = null, ImageFormat imageFormat = null)
 		{
 			try
 			{
 				using (Stream stream = File.Create(path))
 				{
 					Image image = QRCode.TextToBitmap(content,size, barcodeFormat,margin,encoding,errorCorrectionLevel );
-					image.Save(stream, imageFormat ?? System.Drawing.Imaging.ImageFormat.Png);
+					image.Save(stream, imageFormat?? ImageFormat.Png);
+					
 				}
 			}
 			catch (Exception)
@@ -213,6 +215,57 @@ namespace Tools.QRCodeTools.Commom
 			}
 			catch (Exception)
 			{
+				throw;
+			}
+		}
+		public static ImageFormat GetImageFormat(string path)
+		{
+			try
+			{
+
+				string fileType = new FileInfo(path).Extension.ToUpper();
+				ImageFormat imageFormat = null;
+				switch (fileType)
+				{
+					case ".BMP":
+						imageFormat = ImageFormat.Bmp;
+						break;
+					case ".EMF":
+						imageFormat = ImageFormat.Emf;
+						break;
+					case ".EXIF":
+						imageFormat = ImageFormat.Exif;
+						break;
+					case ".GIF":
+						imageFormat = ImageFormat.Gif;
+						break;
+					case ".ICO":
+					case ".ICON":
+						imageFormat = ImageFormat.Icon;
+						break;
+					case ".JPEG":
+						imageFormat = ImageFormat.Jpeg;
+						break;
+					case ".MEMORYBMP":
+						imageFormat = ImageFormat.MemoryBmp;
+						break;
+					case ".PNG":
+						imageFormat = ImageFormat.Png;
+						break;
+					case ".TIFF":
+						imageFormat = ImageFormat.Tiff;
+						break;
+					case ".WMF":
+						imageFormat = ImageFormat.Wmf;
+						break;
+					default:
+						throw new Exception("保存文件时出错,文件类型为：" + fileType);
+				}
+				return imageFormat;
+			}
+			catch (Exception)
+			{
+
 				throw;
 			}
 		}

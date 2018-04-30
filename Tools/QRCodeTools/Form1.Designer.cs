@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.picboxQRCodePicture = new System.Windows.Forms.PictureBox();
 			this.txtQRCodeText = new System.Windows.Forms.TextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -47,6 +48,9 @@
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.btnSavePicture = new System.Windows.Forms.Button();
 			this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+			this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.cheEditFile = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.picboxQRCodePicture)).BeginInit();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -56,6 +60,8 @@
 			// picboxQRCodePicture
 			// 
 			this.picboxQRCodePicture.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.picboxQRCodePicture.ErrorImage = global::Tools.Properties.Resources.lodging;
+			this.picboxQRCodePicture.Image = global::Tools.Properties.Resources.lodging;
 			this.picboxQRCodePicture.Location = new System.Drawing.Point(3, 21);
 			this.picboxQRCodePicture.Name = "picboxQRCodePicture";
 			this.picboxQRCodePicture.Size = new System.Drawing.Size(320, 320);
@@ -69,7 +75,6 @@
 			this.txtQRCodeText.Location = new System.Drawing.Point(3, 21);
 			this.txtQRCodeText.Multiline = true;
 			this.txtQRCodeText.Name = "txtQRCodeText";
-			this.txtQRCodeText.ReadOnly = true;
 			this.txtQRCodeText.Size = new System.Drawing.Size(345, 320);
 			this.txtQRCodeText.TabIndex = 1;
 			this.txtQRCodeText.TextChanged += new System.EventHandler(this.txtQRCodeText_TextChanged);
@@ -192,7 +197,7 @@
 			// 
 			// btnScreen
 			// 
-			this.btnScreen.Location = new System.Drawing.Point(282, 41);
+			this.btnScreen.Location = new System.Drawing.Point(281, 51);
 			this.btnScreen.Name = "btnScreen";
 			this.btnScreen.Size = new System.Drawing.Size(75, 23);
 			this.btnScreen.TabIndex = 10;
@@ -222,11 +227,29 @@
 			this.btnSavePicture.UseVisualStyleBackColor = true;
 			this.btnSavePicture.Click += new System.EventHandler(this.btnSavePicture_Click);
 			// 
+			// notifyIcon1
+			// 
+			this.notifyIcon1.Text = "QRCodeTools";
+			this.notifyIcon1.Visible = true;
+			// 
+			// cheEditFile
+			// 
+			this.cheEditFile.AutoSize = true;
+			this.cheEditFile.Font = new System.Drawing.Font("宋体", 7F);
+			this.cheEditFile.Location = new System.Drawing.Point(376, 56);
+			this.cheEditFile.Name = "cheEditFile";
+			this.cheEditFile.Size = new System.Drawing.Size(75, 17);
+			this.cheEditFile.TabIndex = 2;
+			this.cheEditFile.Text = "编辑文件";
+			this.toolTip1.SetToolTip(this.cheEditFile, "启用的话打开文件后会把内容更新到本地二维码图片");
+			this.cheEditFile.UseVisualStyleBackColor = true;
+			// 
 			// Form1
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(700, 466);
+			this.Controls.Add(this.cheEditFile);
 			this.Controls.Add(this.btnSavePicture);
 			this.Controls.Add(this.btnScanQRCode);
 			this.Controls.Add(this.btnScreen);
@@ -273,5 +296,8 @@
 		private System.Windows.Forms.OpenFileDialog openFileDialog1;
 		private System.Windows.Forms.Button btnSavePicture;
 		private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+		private System.Windows.Forms.NotifyIcon notifyIcon1;
+		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.CheckBox cheEditFile;
 	}
 }
