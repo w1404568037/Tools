@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -183,6 +184,7 @@ namespace Tools.QRCodeTools.Commom
 		{
 			try
 			{
+				//在生成图片之前先处理下Size然后在下方加上数据
 				BarcodeWriter barcodeWriter = new BarcodeWriter();
 				barcodeWriter.Format = barcodeFormat;
 				barcodeWriter.Options.Width = size.Width;
@@ -193,6 +195,14 @@ namespace Tools.QRCodeTools.Commom
 				///bit矩阵？？
 				ZXing.Common.BitMatrix bitMatrix = barcodeWriter.Encode(content);
 				Bitmap bitmap = barcodeWriter.Write(bitMatrix);
+				RectangleF rectangleF = new RectangleF()
+				{
+					X = 0,
+					Y = bitmap.Size.Height,
+					Width = bitmap.Size.Width,
+					Height = (bitmap.Size.Height / 10),
+				};
+				bitmap = (Bitmap)QRCode.QRCodeAddContent(bitmap,content,rectangleF);
 				if (bitmap == null)
 				{
 					throw new Exception("生成二维码失败");
@@ -201,6 +211,83 @@ namespace Tools.QRCodeTools.Commom
 				{
 					return bitmap;
 				}
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+		}
+		/// <summary>
+		/// 在二维码的中添加它的内容的文字
+		/// </summary>
+		/// <param name="image"></param>
+		/// <param name="content"></param>
+		public static Image QRCodeAddContent(Image image,string content,RectangleF rectangleF,Font font=null, SolidBrush solidBrush=null, StringFormat stringFormat=null)
+		{
+			try
+			{
+
+				//参数为空时的默认值
+				if (font == null)
+				{
+					font = new Font("黑体", (image.Height / 10) / 2);
+				}
+				if (solidBrush == null)
+				{
+					solidBrush = new SolidBrush(Color.Black);
+				}
+				if (stringFormat == null)
+				{
+					stringFormat = new StringFormat(StringFormatFlags.FitBlackBox);
+				}
+				//计算绘制文本所需的大小
+				using (Graphics graphics = Graphics.FromImage(image))
+				{
+					SizeF sizef = graphics.MeasureString(content, font, image.Width, stringFormat);
+					rectangleF = new RectangleF()
+					{
+						X = rectangleF.X,
+						Y = rectangleF.Y,
+						Width = rectangleF.Width,
+						Height = sizef.Height,
+					};
+				}
+				Size newSize = new Size()
+				{
+					Width = image.Size.Width,
+					Height = Convert.ToInt32(image.Height + rectangleF.Height),
+				};
+				Point point = new Point()
+				{
+					X = 0,
+					Y = 0,
+				};
+				image = QRCode.ChangImageSize(image, newSize, point);
+				using (Graphics graphics = Graphics.FromImage(image))
+				{
+					graphics.DrawString(content, font, solidBrush, rectangleF, stringFormat);
+				}
+				return image;
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+		}
+		public static Image ChangImageSize(Image image,Size size,Point point)
+		{
+			try
+			{
+				Bitmap bitmap = new Bitmap(size.Width,size.Height);
+				using (Graphics graphics=Graphics.FromImage(bitmap))
+				{
+					graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+					graphics.FillRectangle(new SolidBrush(Color.White), new Rectangle() { Width=bitmap.Width,Height=bitmap.Height });
+					graphics.DrawImage(image, point.X, point.Y,new Rectangle() { Width=image.Width,Height=image.Height }, GraphicsUnit.Pixel);
+				}
+				return bitmap;
 			}
 			catch (Exception)
 			{

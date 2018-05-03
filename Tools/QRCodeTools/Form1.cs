@@ -238,10 +238,11 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 			/// </summary>
 			private System.ComponentModel.IContainer components = null;
 
-			public Rectangle rectangle;
+			Rectangle rectangle;
 
 			Point startPoint;
 			Point endPoint;
+			Image backgroundImage = null;
 
 			public ScreenForm(Image image)
 			{
@@ -249,7 +250,8 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 				{
 					InitializeComponent();
 					this.FormBorderStyle = FormBorderStyle.None;
-					this.BackgroundImage = image;
+					this.backgroundImage = image;
+					this.BackgroundImage = (Image)image.Clone();
 				}
 				catch (Exception ee)
 				{
@@ -350,12 +352,18 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 					this.rectangle = new Rectangle()
 					{
 						Size = size,
-						Location = this.startPoint,
+						Location = this.startPoint, 
 					};
-					Graphics graphics = this.CreateGraphics();
-					Color color = Color.Black;
-					Pen pen = new Pen(color, 0.2f);
-					graphics.DrawRectangle(pen,this.rectangle);
+					Image image = (Image)this.backgroundImage.Clone();
+					using (Graphics graphics = Graphics.FromImage(image))
+					{
+						Color color = Color.Black;
+						Pen pen = new Pen(color, 0.2f);
+						//graphics.Clear(this.BackColor);
+						//this.Invalidate();
+						graphics.DrawRectangle(pen, this.rectangle);
+					}
+					this.BackgroundImage = image;
 				}
 			}
 		}

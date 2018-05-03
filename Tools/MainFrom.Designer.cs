@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrom));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.treeMain = new System.Windows.Forms.TreeView();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -75,6 +76,7 @@
 			this.tabShowForm.SelectedIndex = 0;
 			this.tabShowForm.Size = new System.Drawing.Size(938, 600);
 			this.tabShowForm.TabIndex = 0;
+			this.tabShowForm.DoubleClick += new System.EventHandler(this.tabShowForm_DoubleClick);
 			// 
 			// MainFrom
 			// 
@@ -83,8 +85,9 @@
 			this.ClientSize = new System.Drawing.Size(1182, 653);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "MainFrom";
-			this.Text = "MainFrom";
+			this.Text = "Tools";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.ResumeLayout(false);

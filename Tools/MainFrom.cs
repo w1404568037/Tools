@@ -65,9 +65,9 @@ namespace Tools
 						Object obj = assembly.CreateInstance(type.FullName);
 						if (obj is Form)
 						{
-							parentNode.Text = obj.GetType().Namespace;
 							Form form = (Form)obj;
 							TreeNode chikdNode = new TreeNode() {Text=form.Text,Tag=form };
+							parentNode.Text = obj.GetType().Namespace;
 							parentNode.Nodes.Add(chikdNode);
 						}
 					}
@@ -108,6 +108,15 @@ namespace Tools
 			catch (Exception ee)
 			{
 				MessageBox.Show(ee.Message);
+			}
+		}
+
+		private void tabShowForm_DoubleClick(object sender, EventArgs e)
+		{
+			TabPage tabPage = this.tabShowForm.SelectedTab;
+			if (tabPage!=null)
+			{
+				this.tabShowForm.TabPages.Remove(tabPage);
 			}
 		}
 	}
