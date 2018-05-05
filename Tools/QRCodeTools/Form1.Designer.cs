@@ -245,6 +245,7 @@
 			this.cheEditFile.Text = "编辑文件";
 			this.toolTip1.SetToolTip(this.cheEditFile, "启用的话打开文件后会把内容更新到本地二维码图片");
 			this.cheEditFile.UseVisualStyleBackColor = true;
+			this.cheEditFile.CheckedChanged += new System.EventHandler(this.cheEditFile_CheckedChanged);
 			// 
 			// Form1
 			// 

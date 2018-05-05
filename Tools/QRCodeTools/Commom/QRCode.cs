@@ -12,80 +12,20 @@ using ZXing.QrCode.Internal;
 
 namespace Tools.QRCodeTools.Commom
 {
-	public class QRCode
+	public class QRCodeCommon
 	{
-		private string _Content;
-		private Image _Image;
-
-		/// <summary>
-		/// 在设置Content属性也会同步Image属性
-		/// </summary>
-		public string Content 
-		{
-			get
-			{
-				return this._Content;
-			}
-			set
-			{
-				try
-				{
-					this._Content = value;
-					if (this._Image == null)
-					{
-						this._Image = QRCode.TextToBitmap(value,this.ImageSize, BarcodeFormat.QR_CODE);
-					}
-				}
-				catch (Exception)
-				{
-					this._Content = null;
-					throw;
-				}
-			}
-		}
-		public Size ImageSize = new Size() {Width=400,Height=400 };
-		/// <summary>
-		/// 在设置Image属性也会同步Content属性
-		/// </summary>
-		public Image Image
-		{
-			get
-			{
-				return this._Image;
-			}
-			set
-			{
-				try
-				{
-					this._Image = value;
-					if (this._Content == null)
-					{
-						this._Content = QRCode.BitmapToText(new Bitmap(value));
-					}
-				}
-				catch (Exception)
-				{
-					this._Image = null;
-					throw;
-				}
-			}
-		}
-		public QRCode()
-		{
-
-		}
 		/// <summary>
 		/// 把Bitmap转换成二维码
 		/// </summary>
 		/// <param name="bitmap"></param>
 		/// <returns></returns>
-		public static string BitmapToText(Bitmap bitmap)
+		public static string ImageToText(Image image)
 		{
 			try
 			{
 				BarcodeReader barcodeReader = new BarcodeReader();
 				barcodeReader.Options.CharacterSet = "GB-2312";
-				var result = barcodeReader.Decode(bitmap);
+				var result = barcodeReader.Decode((Bitmap)image);
 				if (result == null)
 				{
 					throw new Exception("图片解码失败。");
@@ -157,7 +97,7 @@ namespace Tools.QRCodeTools.Commom
 			{
 				using (Stream stream = File.Create(path))
 				{
-					Image image = QRCode.TextToBitmap(content,size, barcodeFormat,margin,encoding,errorCorrectionLevel );
+					Image image = QRCodeCommon.TextToBitmap(content,size, barcodeFormat,margin,encoding,errorCorrectionLevel );
 					//保存不了Ico文件。。。不知道为什么
 					image.Save(stream, imageFormat?? ImageFormat.Png);
 					
@@ -202,7 +142,7 @@ namespace Tools.QRCodeTools.Commom
 					Width = bitmap.Size.Width,
 					Height = (bitmap.Size.Height / 10),
 				};
-				bitmap = (Bitmap)QRCode.QRCodeAddContent(bitmap,content,rectangleF);
+				bitmap = (Bitmap)QRCodeCommon.QRCodeAddContent(bitmap,content,rectangleF);
 				if (bitmap == null)
 				{
 					throw new Exception("生成二维码失败");
@@ -263,7 +203,7 @@ namespace Tools.QRCodeTools.Commom
 					X = 0,
 					Y = 0,
 				};
-				image = QRCode.ChangImageSize(image, newSize, point);
+				image = QRCodeCommon.ChangImageSize(image, newSize, point);
 				using (Graphics graphics = Graphics.FromImage(image))
 				{
 					graphics.DrawString(content, font, solidBrush, rectangleF, stringFormat);
