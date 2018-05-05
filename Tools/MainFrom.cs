@@ -66,8 +66,10 @@ namespace Tools
 						if (obj is Form)
 						{
 							Form form = (Form)obj;
-							TreeNode chikdNode = new TreeNode() {Text=form.Text,Tag=form };
-							parentNode.Text = obj.GetType().Namespace;
+							//把可加载的窗体的信息赋给子节点
+							TreeNode chikdNode = new TreeNode() {Text=form.Text,Tag= type.FullName };
+							obj = null;
+							parentNode.Text = type.Namespace;
 							parentNode.Nodes.Add(chikdNode);
 						}
 					}
@@ -86,14 +88,20 @@ namespace Tools
 			try
 			{
 				TreeNode treeNode = this.treeMain.SelectedNode;
-				if (treeNode.Tag is System.Windows.Forms.Form)
+				if (treeNode.Tag is string)
 				{
-					Form form = treeNode.Tag as System.Windows.Forms.Form;
+					string className = treeNode.Tag.ToString();
+					object obj = Activator.CreateInstance(Type.GetType(className));
+					Form form = obj as System.Windows.Forms.Form;
+					if (form==null)
+					{
+						throw new NullReferenceException("找不到窗口："+ className);
+					}
 					form.TopLevel = false;
 					TabControl.TabPageCollection tabPageCollection= this.tabShowForm.TabPages;
 					foreach (TabPage item in tabPageCollection)
 					{
-						if (item.Controls.Contains(form))
+						if (item.Text==form.Text)
 						{
 							this.tabShowForm.SelectedTab = item;
 							return;
@@ -118,6 +126,11 @@ namespace Tools
 			{
 				this.tabShowForm.TabPages.Remove(tabPage);
 			}
+		}
+
+		private void toolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			Application.Exit();
 		}
 	}
 }

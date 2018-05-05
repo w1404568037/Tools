@@ -28,13 +28,18 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrom));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.treeMain = new System.Windows.Forms.TreeView();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.tabShowForm = new System.Windows.Forms.TabControl();
+			this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -45,7 +50,7 @@
 			this.groupBox1.Size = new System.Drawing.Size(200, 629);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "groupBox1";
+			this.groupBox1.Text = "可选功能";
 			// 
 			// treeMain
 			// 
@@ -63,7 +68,7 @@
 			this.groupBox2.Size = new System.Drawing.Size(950, 629);
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "groupBox2";
+			this.groupBox2.Text = "窗口";
 			// 
 			// tabShowForm
 			// 
@@ -78,6 +83,32 @@
 			this.tabShowForm.TabIndex = 0;
 			this.tabShowForm.DoubleClick += new System.EventHandler(this.tabShowForm_DoubleClick);
 			// 
+			// notifyIcon1
+			// 
+			this.notifyIcon1.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+			this.notifyIcon1.BalloonTipText = "By 星星";
+			this.notifyIcon1.BalloonTipTitle = "Tools";
+			this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
+			this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+			this.notifyIcon1.Text = "Tools";
+			this.notifyIcon1.Visible = true;
+			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.contextMenuStrip1.Size = new System.Drawing.Size(211, 56);
+			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(210, 24);
+			this.toolStripMenuItem1.Text = "关闭";
+			this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+			// 
 			// MainFrom
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -90,6 +121,7 @@
 			this.Text = "Tools";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -100,5 +132,8 @@
 		private System.Windows.Forms.TreeView treeMain;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.TabControl tabShowForm;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+		public System.Windows.Forms.NotifyIcon notifyIcon1;
 	}
 }

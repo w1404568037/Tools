@@ -31,6 +31,11 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.picboxQRCodePicture = new System.Windows.Forms.PictureBox();
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
 			this.txtQRCodeText = new System.Windows.Forms.TextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -45,14 +50,18 @@
 			this.btnCopyText = new System.Windows.Forms.Button();
 			this.btnCopyPicture = new System.Windows.Forms.Button();
 			this.btnScreen = new System.Windows.Forms.Button();
-			this.btnScanQRCode = new System.Windows.Forms.Button();
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.btnSavePicture = new System.Windows.Forms.Button();
 			this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-			this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.cheEditFile = new System.Windows.Forms.CheckBox();
+			this.comboBox1 = new System.Windows.Forms.ComboBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.txtWidth = new System.Windows.Forms.TextBox();
+			this.txtHeight = new System.Windows.Forms.TextBox();
+			this.label4 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.picboxQRCodePicture)).BeginInit();
+			this.contextMenuStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -60,6 +69,7 @@
 			// 
 			// picboxQRCodePicture
 			// 
+			this.picboxQRCodePicture.ContextMenuStrip = this.contextMenuStrip1;
 			this.picboxQRCodePicture.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.picboxQRCodePicture.ErrorImage = global::Tools.Properties.Resources.lodging;
 			this.picboxQRCodePicture.Image = global::Tools.Properties.Resources.lodging;
@@ -69,6 +79,44 @@
 			this.picboxQRCodePicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.picboxQRCodePicture.TabIndex = 0;
 			this.picboxQRCodePicture.TabStop = false;
+			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.toolStripMenuItem2,
+            this.toolStripMenuItem3,
+            this.toolStripMenuItem4});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(184, 100);
+			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(183, 24);
+			this.toolStripMenuItem1.Text = "选择图形码类型";
+			// 
+			// toolStripMenuItem2
+			// 
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(183, 24);
+			this.toolStripMenuItem2.Text = "复制图片";
+			this.toolStripMenuItem2.Click += new System.EventHandler(this.btnCopyPicture_Click);
+			// 
+			// toolStripMenuItem3
+			// 
+			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(183, 24);
+			this.toolStripMenuItem3.Text = "复制图片内容";
+			this.toolStripMenuItem3.Click += new System.EventHandler(this.btnCopyText_Click);
+			// 
+			// toolStripMenuItem4
+			// 
+			this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+			this.toolStripMenuItem4.Size = new System.Drawing.Size(183, 24);
+			this.toolStripMenuItem4.Text = "清除图片";
+			this.toolStripMenuItem4.Click += new System.EventHandler(this.toolStripMenuItem4_Click);
 			// 
 			// txtQRCodeText
 			// 
@@ -138,7 +186,7 @@
 			this.groupBox3.Size = new System.Drawing.Size(230, 63);
 			this.groupBox3.TabIndex = 7;
 			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "二维码信息";
+			this.groupBox3.Text = "图片信息";
 			// 
 			// labHeight
 			// 
@@ -198,22 +246,13 @@
 			// 
 			// btnScreen
 			// 
-			this.btnScreen.Location = new System.Drawing.Point(281, 51);
+			this.btnScreen.Location = new System.Drawing.Point(285, 79);
 			this.btnScreen.Name = "btnScreen";
 			this.btnScreen.Size = new System.Drawing.Size(75, 23);
 			this.btnScreen.TabIndex = 10;
 			this.btnScreen.Text = "截屏";
 			this.btnScreen.UseVisualStyleBackColor = true;
 			this.btnScreen.Click += new System.EventHandler(this.btnScreen_Click);
-			// 
-			// btnScanQRCode
-			// 
-			this.btnScanQRCode.Location = new System.Drawing.Point(283, 81);
-			this.btnScanQRCode.Name = "btnScanQRCode";
-			this.btnScanQRCode.Size = new System.Drawing.Size(75, 23);
-			this.btnScanQRCode.TabIndex = 11;
-			this.btnScanQRCode.Text = "扫码";
-			this.btnScanQRCode.UseVisualStyleBackColor = true;
 			// 
 			// openFileDialog1
 			// 
@@ -229,11 +268,6 @@
 			this.btnSavePicture.UseVisualStyleBackColor = true;
 			this.btnSavePicture.Click += new System.EventHandler(this.btnSavePicture_Click);
 			// 
-			// notifyIcon1
-			// 
-			this.notifyIcon1.Text = "QRCodeTools";
-			this.notifyIcon1.Visible = true;
-			// 
 			// cheEditFile
 			// 
 			this.cheEditFile.AutoSize = true;
@@ -243,18 +277,74 @@
 			this.cheEditFile.Size = new System.Drawing.Size(75, 17);
 			this.cheEditFile.TabIndex = 2;
 			this.cheEditFile.Text = "编辑文件";
-			this.toolTip1.SetToolTip(this.cheEditFile, "启用的话打开文件后会把内容更新到本地二维码图片");
 			this.cheEditFile.UseVisualStyleBackColor = true;
 			this.cheEditFile.CheckedChanged += new System.EventHandler(this.cheEditFile_CheckedChanged);
+			// 
+			// comboBox1
+			// 
+			this.comboBox1.FormattingEnabled = true;
+			this.comboBox1.Location = new System.Drawing.Point(100, 51);
+			this.comboBox1.Name = "comboBox1";
+			this.comboBox1.Size = new System.Drawing.Size(121, 23);
+			this.comboBox1.TabIndex = 13;
+			this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(12, 54);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(82, 15);
+			this.label2.TabIndex = 14;
+			this.label2.Text = "图形码种类";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(97, 85);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(22, 15);
+			this.label3.TabIndex = 15;
+			this.label3.Text = "宽";
+			// 
+			// txtWidth
+			// 
+			this.txtWidth.Location = new System.Drawing.Point(124, 80);
+			this.txtWidth.Name = "txtWidth";
+			this.txtWidth.Size = new System.Drawing.Size(57, 25);
+			this.txtWidth.TabIndex = 17;
+			this.txtWidth.TextChanged += new System.EventHandler(this.Size_TextChanged);
+			// 
+			// txtHeight
+			// 
+			this.txtHeight.Location = new System.Drawing.Point(212, 80);
+			this.txtHeight.Name = "txtHeight";
+			this.txtHeight.Size = new System.Drawing.Size(57, 25);
+			this.txtHeight.TabIndex = 19;
+			this.txtHeight.TextChanged += new System.EventHandler(this.Size_TextChanged);
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(185, 85);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(22, 15);
+			this.label4.TabIndex = 18;
+			this.label4.Text = "高";
 			// 
 			// Form1
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(700, 466);
+			this.Controls.Add(this.txtHeight);
+			this.Controls.Add(this.label4);
+			this.Controls.Add(this.txtWidth);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.comboBox1);
 			this.Controls.Add(this.cheEditFile);
 			this.Controls.Add(this.btnSavePicture);
-			this.Controls.Add(this.btnScanQRCode);
 			this.Controls.Add(this.btnScreen);
 			this.Controls.Add(this.btnCopyPicture);
 			this.Controls.Add(this.btnCopyText);
@@ -269,6 +359,7 @@
 			this.Name = "Form1";
 			this.Text = "QRCodeTools";
 			((System.ComponentModel.ISupportInitialize)(this.picboxQRCodePicture)).EndInit();
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
@@ -296,12 +387,20 @@
 		private System.Windows.Forms.Button btnCopyText;
 		private System.Windows.Forms.Button btnCopyPicture;
 		private System.Windows.Forms.Button btnScreen;
-		private System.Windows.Forms.Button btnScanQRCode;
 		private System.Windows.Forms.OpenFileDialog openFileDialog1;
 		private System.Windows.Forms.Button btnSavePicture;
 		private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-		private System.Windows.Forms.NotifyIcon notifyIcon1;
-		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.CheckBox cheEditFile;
+		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.TextBox txtWidth;
+		private System.Windows.Forms.TextBox txtHeight;
+		private System.Windows.Forms.Label label4;
 	}
 }

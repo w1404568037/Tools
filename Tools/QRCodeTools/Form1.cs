@@ -19,19 +19,39 @@ namespace Tools.QRCodeTools
 		public Form1()
 		{
 			InitializeComponent();
-			this.txtQRCodeText.Text="这里输入内容";
 			this.InitControl();
 		}
+		private ZXing.BarcodeFormat barcodeFormat = ZXing.BarcodeFormat.QR_CODE;
 		private void InitControl()
 		{
 			try
 			{
+				this.txtWidth.Text = (this.picboxQRCodePicture.Image.Width * 2).ToString();
+				this.txtHeight.Text = (this.picboxQRCodePicture.Image.Height * 2).ToString();
+				this.txtWidth.LostFocus += this.Size_LostFocus;
+				this.txtHeight.LostFocus += this.Size_LostFocus;
+				this.txtWidth.TextChanged += this.Size_TextChanged;
+				this.txtHeight.LostFocus += this.Size_TextChanged;
+				this.txtQRCodeText.Text="这里输入内容";
+				string[] barcodeFormats = Enum.GetNames(typeof(ZXing.BarcodeFormat));
+				foreach (string item in barcodeFormats)
+				{
+					ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
+					toolStripMenuItem.Text = item;
+					toolStripMenuItem.Tag = Enum.Parse(typeof(ZXing.BarcodeFormat),item);
+					toolStripMenuItem.Click += this.OptionGraphicsCodeType;
+					this.toolStripMenuItem1.DropDownItems.Add(toolStripMenuItem);
+
+					this.comboBox1.Items.Add(Enum.Parse(typeof(ZXing.BarcodeFormat), item));
+				}
+				this.comboBox1.SelectedItem= this.barcodeFormat;
 			}
 			catch (Exception ee)
 			{
 				MessageBox.Show(ee.Message, "错误");
 			}
 		}
+
 
 		/// <summary>
 		/// 打开文件并解码
@@ -106,7 +126,7 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 		{
 			try
 			{
-			
+				Size size;
 				string path = this.txtPicturePath.Text.Trim();
 				string content = this.txtQRCodeText.Text;
 				if (content == "")
@@ -114,8 +134,12 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 					this.picboxQRCodePicture.Image = this.picboxQRCodePicture.ErrorImage;
 					return;
 				}
-				Size size = this.picboxQRCodePicture.Size;
-				Image image = QRCodeCommon.TextToBitmap(content, size, ZXing.BarcodeFormat.QR_CODE);
+				size = new Size()
+				{
+					Width = int.Parse(this.txtWidth.Text) ,
+					Height = int.Parse(this.txtHeight.Text),
+				}; 
+				Image image = QRCodeCommon.TextToBitmap(content, size, this.barcodeFormat);
 				this.picboxQRCodePicture.Image = image;
 				this.labWidth.Text = "宽:" + image.Size.Width.ToString();
 				this.labHeight.Text = "高:" + image.Size.Height.ToString();
@@ -271,249 +295,66 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 				MessageBox.Show(ee.Message, "错误");
 			}
 		}
-		private class ScreenForm : Form
+
+		private void toolStripMenuItem4_Click(object sender, EventArgs e)
 		{
-			/// <summary>
-			/// Required designer variable.
-			/// </summary>
-			private System.ComponentModel.IContainer components = null;
-
-			/// <summary>
-			/// 是否成功截图
-			/// </summary>
-			public bool bSucceed = false;
-
-			/// <summary>
-			/// 要绘制的矩形
-			/// </summary>
-			Rectangle rectangle;
-
-			/// <summary>
-			/// 鼠标的开始位置
-			/// </summary>
-			Point startPoint;
-			/// <summary>
-			/// 鼠标的现在位置
-			/// </summary>
-			Point endPoint;
-
-			public ScreenForm(Image image)
+			this.txtQRCodeText.Text = "";
+		}
+		public void OptionGraphicsCodeType(object sender, EventArgs e)
+		{
+			ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
+			if ((toolStripMenuItem != null)
+				&&(toolStripMenuItem.Tag is ZXing.BarcodeFormat))
 			{
-				try
-				{
-					InitializeComponent();
-					this.FormBorderStyle = FormBorderStyle.None;
-					this.BackgroundImage = image;
-					//以下采用双缓冲方式，减少闪烁
-					this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-					this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-					this.SetStyle(ControlStyles.UserPaint, true);
-				}
-				catch (Exception ee)
-				{
-					MessageBox.Show(ee.Message, "错误");
-				}
+				this.barcodeFormat = (ZXing.BarcodeFormat)toolStripMenuItem.Tag;
+				this.txtQRCodeText_TextChanged(this.txtQRCodeText,null);
 			}
+		}
 
-			/// <summary>
-			/// Clean up any resources being used.
-			/// </summary>
-			/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-			protected override void Dispose(bool disposing)
+		private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			this.barcodeFormat = (ZXing.BarcodeFormat)this.comboBox1.SelectedItem;
+			this.txtQRCodeText_TextChanged(this.txtQRCodeText, null);
+		}
+
+		private void Size_TextChanged(object sender, EventArgs e)
+		{
+			try
 			{
-				if (disposing && (components != null))
+				TextBox textBox = (TextBox)sender;
+				if (textBox.Text.Length > 0)
 				{
-					components.Dispose();
-				}
-				base.Dispose(disposing);
-			}
-			private void InitializeComponent()
-			{
-				try
-				{
-					this.components = new System.ComponentModel.Container();
-					this.Size = Screen.PrimaryScreen.Bounds.Size;
-					this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
-					this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
-					this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
-					this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseLeave);
-				}
-				catch (Exception)
-				{
-					throw;
-				}
-			}
-			private void Form1_KeyPress(object sender, KeyPressEventArgs e)
-			{
-				try
-				{
-					if (e.KeyChar == (char)Keys.Escape)
+					textBox.Text = string.Join("", textBox.Text.Where(c => "0123456789".Contains(c))) ;
+					int number = int.Parse(textBox.Text);
+					if (number > 2000)
 					{
-						this.Close();
+						textBox.Text = "2000";
+					}
+					else if (number<300)
+					{
+						textBox.Text = "300";
 					}
 				}
-				catch (Exception ee)
-				{
-					MessageBox.Show(ee.Message, "错误");
-				}
+				textBox.Text=textBox.Text.TrimStart('0');
 			}
-			private void Form1_MouseDown(object sender, MouseEventArgs e)
+			catch (Exception ee)
 			{
-				if (e.Button == MouseButtons.Left)
-				{
-					this.startPoint = e.Location;
-				}
-				else
-				{
-					this.Close();
-				}
+				MessageBox.Show(ee.Message, "错误");
 			}
-
-			private void Form1_MouseUp(object sender, MouseEventArgs e)
+		}
+		private void Size_TextChang()
+		{ 
+		
+		}
+		private void Size_LostFocus(object sender, EventArgs e)
+		{
+			try
 			{
-				if (e.Button == MouseButtons.Left)
-				{
-					Bitmap bitmap = new Bitmap(this.BackgroundImage);
-					bitmap = bitmap.Clone(this.rectangle, PixelFormat.DontCare);
-					Clipboard.SetImage(bitmap);
-					this.bSucceed = true;
-					this.Close();
-				}
+				this.txtQRCodeText_TextChanged(this.txtQRCodeText, null);
 			}
-			private void Form1_MouseLeave(object sender, MouseEventArgs e)
+			catch (Exception ee)
 			{
-				//重绘窗体
-				this.Refresh();
-				//在当前位置绘制全屏的十字
-				//this.DrawCross(this.CreateGraphics(),e.Location, new Pen(Color.Red, 0.2f));
-				if (e.Button == MouseButtons.Left)
-				{
-					//当前的绘制信息
-					string message = "";
-					// 绘制信息的容器
-					RectangleF messgeRectangleF;
-					//绘制信息的布局信息
-					StringFormat stringFormat = new StringFormat(StringFormatFlags.DirectionRightToLeft);
-
-					this.endPoint = e.Location;
-					Size size = new Size()
-					{
-						Width = endPoint.X - startPoint.X,
-						Height = endPoint.Y - startPoint.Y,
-					};
-					//提示信息
-					message = $"Width:{size.Width},Height:{size.Height}";
-					//测量提示信息需要的Size
-					using (Graphics graphics = this.CreateGraphics())
-					{
-						SizeF sizeF = this.CreateGraphics().MeasureString(message, new Font("黑体", 10F), 200, stringFormat);
-						messgeRectangleF = new RectangleF()
-						{
-							Size = new Size()
-							{
-								Width = (int)sizeF.Width,
-								Height = (int)sizeF.Height,
-							},
-						};
-					}
-					//鼠标在左上角
-					if ((endPoint.X < startPoint.X)
-						&& (endPoint.Y < startPoint.Y))
-					{
-						this.rectangle = new Rectangle()
-						{
-							Size = size,
-							Location = this.endPoint,
-						};
-						messgeRectangleF = new RectangleF()
-						{
-							Size = messgeRectangleF.Size,
-							X = this.endPoint.X - messgeRectangleF.Width,
-							Y = this.endPoint.Y - messgeRectangleF.Height,
-						};
-					}
-					//鼠标在左下角
-					else if ((endPoint.X < startPoint.X)
-						&& (endPoint.Y > startPoint.Y))
-					{
-						this.rectangle = new Rectangle()
-						{
-							Size = size,
-							Location = new Point()
-							{
-								X = this.endPoint.X,
-								Y = this.startPoint.Y,
-							},
-						};
-						messgeRectangleF = new RectangleF()
-						{
-							Size = messgeRectangleF.Size,
-							X = this.endPoint.X - messgeRectangleF.Width,
-							Y = this.endPoint.Y,
-						};
-					}
-					//鼠标在右上角
-					else if ((endPoint.X > startPoint.X)
-						&& (endPoint.Y < startPoint.Y))
-					{
-						this.rectangle = new Rectangle()
-						{
-							Size = size,
-							Location = new Point()
-							{
-								X = this.startPoint.X,
-								Y = this.endPoint.Y,
-							},
-						};
-						messgeRectangleF = new RectangleF()
-						{
-							Size = messgeRectangleF.Size,
-							X = this.endPoint.X,
-							Y = this.endPoint.Y - messgeRectangleF.Height,
-						};
-					}
-					//鼠标在右下角
-					else
-					{
-						this.rectangle = new Rectangle()
-						{
-							Size = size,
-							Location = this.startPoint,
-						};
-						messgeRectangleF = new RectangleF()
-						{
-							Size = messgeRectangleF.Size,
-							Location = this.endPoint,
-						};
-					}
-					using (Graphics graphics = this.CreateGraphics())
-					{
-						Color color = Color.Red;
-						Pen pen = new Pen(color, 0.1F);
-						//绘制截图矩形
-						graphics.DrawRectangle(pen, this.rectangle);
-						//绘制截图信息
-						Brush brush = new SolidBrush(color);
-						graphics.DrawRectangle(pen, messgeRectangleF.X, messgeRectangleF.Y, messgeRectangleF.Width, messgeRectangleF.Height);
-						graphics.DrawString(message, new Font("黑体", 10F), brush, messgeRectangleF, stringFormat);
-					}
-				}
-			}
-			/// <summary>
-			/// 根据当前位置绘制十字
-			/// </summary>
-			/// <param name="graphics"></param>
-			/// <param name="point"></param>
-			/// <param name="pen"></param>
-			public void DrawCross(Graphics graphics, Point point, Pen pen)
-			{
-				PointF p1 = new Point(0, point.Y);
-				PointF p2 = new Point((int)graphics.DpiX, point.Y);
-				PointF p3 = new Point(point.X, 0);
-				PointF p4 = new Point(point.X, (int)graphics.DpiY);
-				graphics.DrawLine(pen, p1, p2);
-				graphics.DrawLine(pen, p3, p4);
-				graphics.Dispose();
+				MessageBox.Show(ee.Message, "错误");
 			}
 		}
 
