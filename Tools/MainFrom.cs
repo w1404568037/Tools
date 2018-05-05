@@ -124,7 +124,9 @@ namespace Tools
 			TabPage tabPage = this.tabShowForm.SelectedTab;
 			if (tabPage!=null)
 			{
+				tabPage.Controls.Clear();
 				this.tabShowForm.TabPages.Remove(tabPage);
+				tabPage.Dispose();
 			}
 		}
 

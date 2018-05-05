@@ -21,7 +21,19 @@ namespace Tools.QRCodeTools
 			InitializeComponent();
 			this.InitControl();
 		}
+		/// <summary>
+		/// 当前选择的图形码类型
+		/// </summary>
 		private ZXing.BarcodeFormat barcodeFormat = ZXing.BarcodeFormat.QR_CODE;
+		/// <summary>
+		/// 一个获取当前键盘按键的钩子
+		/// </summary>
+		Tools.Common.KeyBordHook keyBordHook = null;
+
+		/// <summary>
+		/// 当前程序运行中获取的所有按键
+		/// </summary>
+		List<Keys> keys = new List<Keys>();
 		private void InitControl()
 		{
 			try
@@ -45,12 +57,18 @@ namespace Tools.QRCodeTools
 					this.comboBox1.Items.Add(Enum.Parse(typeof(ZXing.BarcodeFormat), item));
 				}
 				this.comboBox1.SelectedItem= this.barcodeFormat;
+
+				this.keyBordHook = new Common.KeyBordHook();
+				this.keyBordHook.OnKeyDownEvent += new KeyEventHandler(this.On_KeyDownEvent);
+				this.keyBordHook.OnKeyPressEvent += new KeyPressEventHandler(this.OnKeyPressEvent);
+				this.keyBordHook.OnKeyUpEvent += new KeyEventHandler(this.On_KeyDownEvent);
 			}
 			catch (Exception ee)
 			{
 				MessageBox.Show(ee.Message, "错误");
 			}
 		}
+
 
 
 		/// <summary>
@@ -342,10 +360,6 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 				MessageBox.Show(ee.Message, "错误");
 			}
 		}
-		private void Size_TextChang()
-		{ 
-		
-		}
 		private void Size_LostFocus(object sender, EventArgs e)
 		{
 			try
@@ -358,5 +372,14 @@ Tag Image File Format (*.tif)|*.tif;*.tiff";
 			}
 		}
 
+		private void OnKeyPressEvent(object sender, KeyPressEventArgs e)
+		{
+			char c = e.KeyChar;
+		}
+
+		private void On_KeyDownEvent(object sender, KeyEventArgs e)
+		{
+			 this.keys.Add(e.KeyCode);
+		}
 	}
 }

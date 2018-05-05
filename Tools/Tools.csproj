@@ -48,6 +48,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\KeyBordHook.cs" />
+    <Compile Include="Common\KeyButton.cs" />
     <Compile Include="Common\MessageBox.cs">
       <SubType>Form</SubType>
     </Compile>
