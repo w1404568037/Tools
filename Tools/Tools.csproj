@@ -44,7 +44,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="zxing">
-      <HintPath>E:\资料\常用js、dll、前端框架\dll\Zing(二维码库)\zxing.dll</HintPath>
+      <HintPath>D:\资料\常用js、dll、前端框架\dll\Zing(二维码库)\zxing.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +61,12 @@
     </Compile>
     <Compile Include="MainFrom.Designer.cs">
       <DependentUpon>MainFrom.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PictureSuspend\PictureSuspend.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PictureSuspend\PictureSuspend.Designer.cs">
+      <DependentUpon>PictureSuspend.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,6 +85,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainFrom.resx">
       <DependentUpon>MainFrom.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PictureSuspend\PictureSuspend.resx">
+      <DependentUpon>PictureSuspend.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
