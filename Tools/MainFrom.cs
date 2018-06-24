@@ -69,7 +69,8 @@ namespace Tools
 							//把可加载的窗体的信息赋给子节点
 							TreeNode chikdNode = new TreeNode() {Text=form.Text,Tag= type.FullName };
 							obj = null;
-							parentNode.Text = type.Namespace;
+							//parentNode.Text = type.Namespace;
+							parentNode.Text = "主菜单";
 							parentNode.Nodes.Add(chikdNode);
 						}
 					}
